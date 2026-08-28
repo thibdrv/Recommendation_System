@@ -216,31 +216,34 @@ def play_intro_sound():
 # ── DATA LOADING ──────────────────────────────────────────────────────────────
 @st.cache_data(show_spinner=False)
 def load_data():
-    paths = [
-       os.path.join(os.path.dirname(__file__), "..", "exports", "powerbi_movies.csv"),
-        "../exports/powerbi_movies.csv",
+    urls = [
+        "https://raw.githubusercontent.com/thibdrv/Recommendation_System/refs/heads/main/BDD/powerbi_movies.csv",
         # fallback raw
-        os.path.join(os.path.dirname(__file__), "..", "data", "tmdb_movies_raw.csv"),
+        "https://raw.githubusercontent.com/thibdrv/Recommendation_System/refs/heads/main/BDD/tmdb_movies_raw.csv",
     ]
-    for p in paths:
-        if os.path.exists(p):
-            df = pd.read_csv(p, low_memory=False)
-            # ensure required derived columns
-            if "primary_genre" not in df.columns:
-                df["primary_genre"] = df["genres"].apply(
-                    lambda x: str(x).split(",")[0].strip() if pd.notna(x) else "Unknown")
-            if "weighted_rating" not in df.columns:
-                df["vote_count"]   = pd.to_numeric(df.get("vote_count",0), errors="coerce").fillna(0)
-                df["vote_average"] = pd.to_numeric(df.get("vote_average",0), errors="coerce").fillna(0)
-                m = df["vote_count"].quantile(0.75)
-                C = df["vote_average"].mean()
-                df["weighted_rating"] = ((df["vote_count"]/(df["vote_count"]+m))*df["vote_average"] +
-                                          (m/(df["vote_count"]+m))*C).round(3)
-            df = df[df.get("status", pd.Series(["Released"]*len(df))) == "Released"] if "status" in df.columns else df
-            df = df[df.get("adult", pd.Series([False]*len(df))) == False] if "adult" in df.columns else df
-            df = df.reset_index(drop=True)
-            return df
-    st.error(" Data files not found. Place tmdb_movies_clean.csv in the data/ folder.")
+    for url in urls:
+        try:
+            df = pd.read_csv(url, low_memory=False)
+        except Exception:
+            continue
+
+        # ensure required derived columns
+        if "primary_genre" not in df.columns:
+            df["primary_genre"] = df["genres"].apply(
+                lambda x: str(x).split(",")[0].strip() if pd.notna(x) else "Unknown")
+        if "weighted_rating" not in df.columns:
+            df["vote_count"]   = pd.to_numeric(df.get("vote_count", 0), errors="coerce").fillna(0)
+            df["vote_average"] = pd.to_numeric(df.get("vote_average", 0), errors="coerce").fillna(0)
+            m = df["vote_count"].quantile(0.75)
+            C = df["vote_average"].mean()
+            df["weighted_rating"] = ((df["vote_count"] / (df["vote_count"] + m)) * df["vote_average"] +
+                                      (m / (df["vote_count"] + m)) * C).round(3)
+        df = df[df.get("status", pd.Series(["Released"] * len(df))) == "Released"] if "status" in df.columns else df
+        df = df[df.get("adult", pd.Series([False] * len(df))) == False] if "adult" in df.columns else df
+        df = df.reset_index(drop=True)
+        return df
+
+    st.error("Data files not found or unreachable. Check the URLs or your internet connection.")
     st.stop()
 
 @st.cache_resource(show_spinner=False)
@@ -312,7 +315,10 @@ def get_recs(title, df, mat, t2i, n=5, algo="Content-Based (TF-IDF)",
         "overview","weighted_rating","imdb_id"
     ]].reset_index(drop=True)
     return results, df.iloc[idx]
+
+
 # ── AUTH ──────────────────────────────────────────────────────────────────────
+
 def init_auth():
     if "users_db" not in st.session_state:
         st.session_state.users_db = {
@@ -360,7 +366,10 @@ def auth_sidebar(t):
                         st.session_state.current_user = nu
                         st.rerun()
         return False
+
+    
 # ── MOVIE CARD ────────────────────────────────────────────────────────────────
+
 def movie_card(row, rank, t, show_score=True):
     genres_html = "".join([
         f'<span class="badge-genre">{g.strip()}</span>'
@@ -382,8 +391,10 @@ def movie_card(row, rank, t, show_score=True):
       <div style="margin-top:0.4rem">{genres_html}</div>
       {sim_bar}{sim_txt}
     </div>""", unsafe_allow_html=True)
+
     
 # ── STATS PAGE ────────────────────────────────────────────────────────────────
+
 def show_stats(df, t):
     st.markdown('<div class="section-hdr"> Catalog Statistics — Real TMDB Data</div>', unsafe_allow_html=True)
 
@@ -441,7 +452,10 @@ def show_stats(df, t):
         top10.columns = ["Title","TMDB Rating","Weighted Rating"]
         st.markdown("** Top 10 Films (Weighted Rating)**")
         st.dataframe(top10, use_container_width=True, height=330)
+
+
  #        ── CATALOG PAGE ──────────────────────────────────────────────────────────────
+
 def show_catalog(df, t):
     st.markdown('<div class="section-hdr"> Browse Real TMDB Catalog</div>', unsafe_allow_html=True)
     c1,c2,c3 = st.columns(3)
@@ -482,6 +496,7 @@ def show_catalog(df, t):
 
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────
+
 def main():
     inject_css()
 
@@ -512,8 +527,10 @@ def main():
 
     # Navigation
     page = st.sidebar.radio("Navigate", [t["recs"], t["catalog"], t["stats"], t["about"]])
+
     
     # ── RECOMMENDATIONS PAGE ─────────────────────────────────────────────────
+
     if page == t["recs"]:
 
         # Quick-pick from popular films
@@ -621,13 +638,17 @@ def main():
                             st.markdown(f'<div class="section-hdr">{t["favorites"]}</div>', unsafe_allow_html=True)
                             for fav in user_favs:
                                 st.write(f"• {fav}")
+
+
     # ── CATALOG ──────────────────────────────────────────────────────────────
     elif page == t["catalog"]:
         show_catalog(df, t)
 
+
     # ── STATS ────────────────────────────────────────────────────────────────
     elif page == t["stats"]:
         show_stats(df, t)
+        
 
     # ── ABOUT ────────────────────────────────────────────────────────────────
     elif page == t["about"]:
