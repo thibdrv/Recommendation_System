@@ -20,17 +20,23 @@ from collections import Counter
 import warnings
 warnings.filterwarnings("ignore")
 
+
 # ── PAGE CONFIG ───────────────────────────────────────────────────────────────
+
 st.set_page_config(
     page_title="WildFlix ",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
+
 # ── TMDB CONFIG ───────────────────────────────────────────────────────────────
+
 TMDB_IMG     = "https://image.tmdb.org/t/p/w500"
 
+
 # ── TRANSLATIONS ──────────────────────────────────────────────────────────────
+
 T = {
     "English": {
         "tagline": "Your Personal Cinema, Powered by AI",
@@ -142,7 +148,9 @@ T = {
     }
 }
 
+
 # ── CSS ───────────────────────────────────────────────────────────────────────
+
 def inject_css():
     st.markdown("""
     <style>
@@ -187,7 +195,9 @@ def inject_css():
     </style>
     """, unsafe_allow_html=True)
 
+
 # ── INTRO SOUND ───────────────────────────────────────────────────────────────
+
 def play_intro_sound():
     if "sound_played" not in st.session_state:
         st.session_state.sound_played = True
@@ -213,12 +223,13 @@ def play_intro_sound():
         buf.seek(0)
         st.audio(buf, format='audio/wav', autoplay=True)
 
+
 # ── DATA LOADING ──────────────────────────────────────────────────────────────
+
 @st.cache_data(show_spinner=False)
 def load_data():
     urls = [
         "https://raw.githubusercontent.com/thibdrv/Recommendation_System/refs/heads/main/BDD/powerbi_movies.csv",
-        # fallback raw
         "https://raw.githubusercontent.com/thibdrv/Recommendation_System/refs/heads/main/BDD/tmdb_movies_raw.csv",
     ]
     for url in urls:
@@ -521,7 +532,7 @@ def main():
       <div class="wf-logo"> WildFlix</div>
       <div class="wf-sub">{t['tagline']}</div>
       <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-top:0.5rem">
-        Data: TMDB API · {len(df):,} real movies · API Key: 1e76255e44...
+        Data : TMDB API · {len(df):,} real movies · API Key :
       </div>
     </div>""", unsafe_allow_html=True)
 
