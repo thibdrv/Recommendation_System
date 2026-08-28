@@ -4,7 +4,7 @@ Welcome to the WildFlix repository !
 
 This project delivers an end-to-end movie recommendation engine combined with interactive data filtering and financial business analytics. It addresses classic streaming catalog challenges such as choice overload, quality filtering, and niche genre exposure.
 
-### 🌐 Live Streamlit Application : [In process]
+### 🌐 Streamlit Application : [https://wildflix-data-app.streamlit.app/]
 
 ______
 
