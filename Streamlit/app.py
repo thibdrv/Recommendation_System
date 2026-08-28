@@ -546,7 +546,7 @@ def main():
 
         # Quick-pick from popular films
         popular = df.nlargest(30, "vote_count")["title"].tolist()
-        quick = st.selectbox(" Quick pick:", ["(type below)"] + popular)
+        quick = st.selectbox(" Quick pick :", ["Choose you type"] + popular)
 
         movie_input = st.text_input(
             t["search_label"],
