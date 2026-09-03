@@ -48,5 +48,3 @@ This project let me practice and deepen several skills, from data collection all
 - Deploying to **Streamlit Cloud** and solving real-world issues: relative file path handling, a misplaced or incomplete `requirements.txt`, missing dependencies.
 - Loading large datasets directly from a **GitHub repo** (raw URLs) as an alternative to local storage.
 - Becoming aware of **security considerations**: avoiding exposed API keys or plaintext passwords in source code, and understanding the difference between a demo authentication system and a real production system (password hashing, data persistence).
-
-This project mainly taught me that a system that works locally doesn't always behave the same way once deployed handling file paths, dependencies, and external data requires special attention that's specific to the cloud.
