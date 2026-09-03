@@ -34,5 +34,3 @@ The included authentication system is a **demo**, not a production-ready system 
 ### Data structure
 
 The app loads its data directly from CSV files hosted on GitHub (raw URLs), rather than from local files. This includes information on movies, genres, directors, and aggregated statistics, originally generated from the TMDB API.
-
-> ⚠️ This requires the GitHub repository to be **public** otherwise the raw file URLs will return a 404 error. If the repo is made private in the future, the data loading logic in `app.py` will need to be updated (e.g. using a GitHub token or switching back to local files).
