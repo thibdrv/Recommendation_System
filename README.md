@@ -9,7 +9,7 @@ This project delivers an end-to-end movie recommendation engine combined with in
 Login : demo / demo
 ______
 
-### 📂 Project Structure :
+### 📂 Project Structure : https://drive.google.com/drive/folders/1_NV7vKVPV02fAsXF2yseqqYccQe_xUS2?usp=sharing
 
 Full_Film_Recommender.ipynb :
 
